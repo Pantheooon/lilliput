@@ -1,0 +1,129 @@
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    top: 0;
+    left: calc(50% - 800px);
+    z-index: 2;
+}
+
+.header-logo {
+    font-size: 40px;
+    line-height: 50px;
+    text-align: center;
+    font-weight: bold;
+    font-style: italic;
+    font-family: "Courier New";
+    text-shadow: 3px 3px 3px #DC9814;
+}
+
+.header-right-cart-num {
+    font-size: 8px;
+    position: relative;
+    top: -10px;
+    font-family: "微软雅黑";
+    font-weight: bold;
+    color: #DC9814;
+}
+
+/*.iconfont {*/
+/*    font-size: 25px !important;*/
+/*}*/
+
+.header-right {
+    display: flex;
+    justify-content: center;
+}
+
+.header-right > div {
+    padding-left: 35px;
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+.cart{
+    position: fixed;
+    width: 500px;
+    margin-top: -50px;
+    height: 100%;
+    right: 0px;
+    background: #333333;
+    z-index: 2;
+    visibility: visible;
+}
+
+
+
+.cart-item{
+    width: 400px;
+    height: 80px;
+    margin: 0px auto;
+    display: flex;
+    justify-content: center;
+
+}
+
+.car_item-left{
+    width: 80px;
+    height: 80px;
+
+}
+
+.cart-item_img{
+    width: 50px;
+    height: 50px;
+    padding-left: 15px;
+    padding-top: 15px;
+
+}
+
+.cart-item_right{
+    width: 300px;
+    padding-left: 5px;
+}
+.cart-item-price{
+    float: right;
+}
+.cart-item-bottom{
+    margin-top: 25px;
+}
+.cart-item-hr{
+    background-color: #464646;
+    border: none;
+    height: 1px;
+}
+
+.cart-top{
+    width: 400px;
+    height: 80px;
+    margin: 0px auto;
+}
+.cart-bottom{
+    width: 400px;
+    height: 80px;
+    margin: 0px auto;
+    position: relative;
+}
+
+.cart-top_close{
+    float: right;
+    cursor: pointer;
+    position: relative;
+    margin-top: 10px;
+
+}
+.cart-item_right_close{
+    float: right;
+    cursor: pointer;
+}
+.icon-xiangzuo{
+    cursor: pointer;
+}
+.icon-xiangyou1{
+    cursor: pointer;
+}
+.icon-25{
+    font-size: 25px;
+}
