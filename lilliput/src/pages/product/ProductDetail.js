@@ -13,16 +13,10 @@ const ProductDetail = observer(() => {
     let [defaultNum, setDefaultNum] = useState(1)
 
     const addToCartFromDetail = () => {
-
         const data = pro[0]
         data.num = defaultNum
         cartStore.addCart(data)
 
-    }
-    const style = {
-        "display": "flex",
-        "flexWrap": "wrap",
-        "justifyContent": "space-between"
     }
     return (
         <div className="base-content">

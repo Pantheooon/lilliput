@@ -92,10 +92,10 @@ const CartModel = observer(() => {
                                     <span>{product.name}</span><br/>
                                     <div className="cart-item-bottom">
                                         <span>数量 </span>
-                                        <i className={"iconfont icon-xiangzuo"}/>
+                                        <i className={"iconfont icon-xiangzuo"} onClick={()=>{carts.decrease(id)}}/>
                                         <strong style={{fontSize: "17px"}}>{product.num}</strong>
-                                        <i className={"iconfont icon-xiangyou1"}/>
-                                        <span className="cart-item-price">价格: {product.price}</span>
+                                        <i className={"iconfont icon-xiangyou1"} onClick={()=>{carts.increase(id)}}/>
+                                        <span className="cart-item-price">价格: {carts.price(id)}</span>
                                     </div>
 
                                 </div>

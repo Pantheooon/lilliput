@@ -12,7 +12,7 @@ function ProductList(props) {
         Modal.success({
             content: (
                 <div>
-                    <p>add to cart successfully</p>
+                    <p>添加成功</p>
                 </div>
             ),
         });

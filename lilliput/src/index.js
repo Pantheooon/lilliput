@@ -53,7 +53,7 @@ function Footer() {
     return (
         <div className="base-content">
             <hr/>
-            <div className="footer">Copyright © 2023 ARES. All Rights Reserved.</div>
+            <div className="footer">Copyright © 2023 LILLIPUT. All Rights Reserved.</div>
         </div>
     )
 }

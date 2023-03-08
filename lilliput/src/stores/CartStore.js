@@ -3,7 +3,10 @@ import {makeAutoObservable} from "mobx";
 
 export class CartStore {
 
-    products = {}
+    products = {
+
+
+    }
 
     constructor() {
         const carts = localStorage.getItem("cart")
@@ -37,9 +40,28 @@ export class CartStore {
         localStorage.setItem("cart", JSON.stringify(this.products))
     }
 
+    increase(productId){
+        let product = this.products[productId]
+        product.num = product.num + 1
+        localStorage.setItem("cart",JSON.stringify(this.products))
+    }
+
+    decrease(productId){
+        let product = this.products[productId]
+        if (product.num === 1) return
+        product.num = product.num - 1
+        localStorage.setItem("cart",JSON.stringify(this.products))
+    }
+
+   price(productId){
+        let product = this.products[productId]
+        console.log(product)
+        if (!product) return
+        return product.num * product.price
+
+    }
+
     minusCart = function (productId) {
-
-
         delete this.products[productId]
         localStorage.setItem("cart", JSON.stringify(this.products))
 
