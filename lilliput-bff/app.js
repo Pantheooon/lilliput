@@ -7,16 +7,13 @@ const config = require('./config/config')
 const {koaBody} = require('koa-body');
 const axios = require('axios')
 const {AxiosError} = require("axios");
-
+const user = require("./service/user");
+const goods = require("./service/goods");
+const {authUrl} = require("./config/config");
+const {verifyToken} = require("./service/user");
 
 app.use(koaBody())
-app.use(async (ctx, next) => {
-    try {
-        await next()
-    } catch (err) {
-        ctx.body = err.message
-    }
-})
+
 
 app.use(async (ctx, next) => {
     const start = Date.now()
@@ -27,6 +24,14 @@ app.use(async (ctx, next) => {
 
 app.use(async (ctx, next) => {
     try {
+        let u = `[${ctx.request.method}]${ctx.request.url}`
+        if (authUrl.find(it=>it === u)){
+            let res = await verifyToken(ctx.header.authorization)
+            if(res.status === 401) {
+                ctx.status = 401
+                return
+            }
+        }
         await next()
     } catch (err) {
         if (err instanceof AxiosError) {

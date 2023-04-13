@@ -1,24 +1,35 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {Carousel, Image} from 'antd';
 import './broadcast.css'
-export default function BroadCast() {
+import {getBroadcast} from "../../api/Goods";
+import {observer} from "mobx-react";
+
+
+
+const BroadCast = observer(()=>{
+    let [broadcast, setBroadcast] = useState([])
+    useEffect(() => {
+        getBroadcast().then(r=>{
+            setBroadcast(r.data)
+        })
+    }, [])
+
     return (
         <div className="base-content broadcast">
             <Carousel autoplay>
-                <div>
-                   <Image className="broadcast-img" src="https://pantheon-blog.oss-cn-beijing.aliyuncs.com/lunbo2.jpg"/>
-                </div>
-                <div>
-                    <Image className="broadcast-img" src="https://pantheon-blog.oss-cn-beijing.aliyuncs.com/lunbo2.jpg"/>
-                </div>
-                <div>
-                    <Image className="broadcast-img" src="https://pantheon-blog.oss-cn-beijing.aliyuncs.com/lunbo2.jpg"/>
-                </div>
-                <div>
-                    <Image className="broadcast-img" src="https://pantheon-blog.oss-cn-beijing.aliyuncs.com/lunbo2.jpg"/>
-                </div>
+                {
+                    broadcast.map((data, index) => {
+                        return (
+                            <div key={data.id}>
+                                <Image className="broadcast-img" preview={false}
+                                       src={data.broadCastPic} alt={data.name} onClick={()=>{ window.location.hash = `/product/${data.goodsId}`}}/>
+                            </div>
+                        )
+                    })
+                }
             </Carousel>
         </div>
     )
+})
 
-}
+export default BroadCast

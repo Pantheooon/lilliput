@@ -1,15 +1,15 @@
 import './header.css'
-import React, {useContext, useMemo, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import * as antd from 'antd';
-import {Button, Input, Select} from 'antd';
+import {Button, Input} from 'antd';
 import {LockOutlined, UserOutlined} from "@ant-design/icons";
 import Modal from "antd/es/modal/Modal";
 import {storeContext} from "../../stores/RootStore";
 import {observer} from "mobx-react";
 import {login, profileMe, signUp} from "../../api/User"
+import {orderList, saveOrder} from "../../api/Order";
 
 export const Header = observer(() => {
-    //https://ares.lk/
     profileMe(useContext(storeContext).userStore)
 
     return (
@@ -17,6 +17,7 @@ export const Header = observer(() => {
             <HeaderNav/>
             <LoginModel/>
             <CartModel/>
+            <OrderModel/>
             <SignUpModel/>
         </div>
 
@@ -32,7 +33,10 @@ const HeaderNav = observer(() => {
     let cartStore = useContext(storeContext).cartStore
     return (
         <div className="header base-content">
-            <div className="header-logo pointer">LILLIPUT</div>
+            <div className="header-logo pointer" onClick={() => {
+                window.location.hash = "/"
+            }}>LILLIPUT
+            </div>
             <div className="header-right">
                 <div className="header-right-me pointer">
                     {
@@ -50,9 +54,11 @@ const HeaderNav = observer(() => {
 
                 </div>
                 <div className="header-right-cart pointer"><i
-                    className={"iconfont icon-31gouwuche icon-25"} onClick={() => navStore.openCart()}><span
+                    className={"iconfont icon-31gouwuche icon-25"} onClick={() => {navStore.openCart()
+                    navStore.closeOrder()}}><span
                     className="header-right-cart-num">{cartStore.getCartNum()}</span></i></div>
-                <div className="header-right-order pointer">
+                <div className="header-right-order pointer" onClick={() => {navStore.openOrder()
+                    navStore.closeCart()}}>
                     <i className={"iconfont icon-quanbudingdan icon-25"}/>
                 </div>
             </div>
@@ -61,9 +67,96 @@ const HeaderNav = observer(() => {
 })
 
 
+const OrderModel = observer(() => {
+
+    let navStore = useContext(storeContext).navStore
+
+    let [orders, setOrders] = useState([])
+
+
+    useEffect(() => {
+        orderList().then(r => {
+            setOrders(r.data)
+        })
+    }, [])
+
+    console.log(orders)
+
+
+    return (<div className="cart" style={{visibility: navStore.order ? "visible" : "hidden"}}>
+        <div className="cart-top" style={{height: "70px"}}>
+            <i className={"cart-top_close"} onClick={() => {
+                navStore.closeOrder()
+            }}>关闭</i>
+        </div>
+        <hr width="400px" className={"cart-item-hr"}/>
+        <div className="cart-items">
+            {
+              orders.map((it,idx)=>{
+                  return (
+                      <div key={it.id}>
+                          <div className={"order-item"}>
+                              <div className="car-item_left">
+                                  <img src={it.goods.pic}
+                                       className="cart-item_img"/>
+                              </div>
+                              <div className={"cart-item_right"}>
+                                  <span>订单号:{it.id}</span><br/>
+                                  <span>商品名称:{it.goods.name}</span><br/>
+                                  <span>数量:{it.num} </span><br/>
+                                  <span>价格:{it.price}</span><br/>
+                                  <span>下单时间：{it.purchaseTime}</span>
+
+                              </div>
+                          </div>
+                          <hr width="400px" className={"cart-item-hr"}/>
+
+                      </div>)
+              })
+            }
+        </div>
+    </div>)
+})
+
 const CartModel = observer(() => {
     let carts = useContext(storeContext).cartStore
     let navStore = useContext(storeContext).navStore
+    let checkout = () => {
+
+
+        let goods = carts.getGoods()
+        if (!goods) return
+
+        let goodsId = Object.keys(goods)
+
+        if (!goodsId || goodsId.length === 0) return;
+
+        let createOrder = []
+
+        goodsId.forEach((it) => {
+            createOrder.push({
+                id: it,
+                num: goods[it].num
+            })
+        })
+
+        saveOrder(createOrder).then(r => {
+            antd.Modal.success({
+                content: (
+                    <div>
+                        <p>下单成功</p>
+                    </div>
+                ),
+            });
+
+            carts.clear()
+
+            window.location.reload()
+        })
+
+
+    }
+
     return (<div className="cart" style={{visibility: navStore.cart ? "visible" : "hidden"}}>
         <div className="cart-top" style={{height: "70px"}}>
             <i className={"cart-top_close"} onClick={() => {
@@ -74,12 +167,12 @@ const CartModel = observer(() => {
         <div className="cart-items">
             {
 
-                Object.keys(carts.products).map((id, idx) => {
-                    const product = carts.products[id]
+                Object.keys(carts.goods).map((id, idx) => {
+                    const product = carts.goods[id]
                     return (
                         <div key={id}>
                             <div className={"cart-item"}>
-                                <div className="car_item-left">
+                                <div className="car-item_left">
                                     <img src={product.pic}
                                          className="cart-item_img"/>
                                 </div>
@@ -92,9 +185,13 @@ const CartModel = observer(() => {
                                     <span>{product.name}</span><br/>
                                     <div className="cart-item-bottom">
                                         <span>数量 </span>
-                                        <i className={"iconfont icon-xiangzuo"} onClick={()=>{carts.decrease(id)}}/>
+                                        <i className={"iconfont icon-xiangzuo"} onClick={() => {
+                                            carts.decrease(id)
+                                        }}/>
                                         <strong style={{fontSize: "17px"}}>{product.num}</strong>
-                                        <i className={"iconfont icon-xiangyou1"} onClick={()=>{carts.increase(id)}}/>
+                                        <i className={"iconfont icon-xiangyou1"} onClick={() => {
+                                            carts.increase(id)
+                                        }}/>
                                         <span className="cart-item-price">价格: {carts.price(id)}</span>
                                     </div>
 
@@ -110,23 +207,24 @@ const CartModel = observer(() => {
 
 
         <div className="cart-bottom">
-            <div>
-                <span style={{float: "right"}}>总价: {carts.totalPrice()}</span>
-            </div>
-            <div style={{float: "right", marginTop: "20px"}}>
-                <Button type="default" onClick={() => {
-                    checkout()
-                }}>下单</Button>
-            </div>
+            <div style={{float: "right"}}>
+                <div>
+                    <span>总价: {carts.totalPrice()}</span>
+                </div>
 
+                <br/>
+                <div>
+                    <Button type="default" onClick={() => {
+                        checkout()
+                    }}>下单</Button>
+                </div>
+
+            </div>
         </div>
 
     </div>)
 })
 
-
-function checkout() {
-}
 
 const SignUpModel = observer(() => {
     const [confirmLoading, setConfirmLoading] = useState(false);
@@ -224,9 +322,9 @@ const LoginModel = observer(() => {
     let navStore = useContext(storeContext).navStore
     let userStore = useContext(storeContext).userStore
     const handleOk = () => {
-        login(loginData.userName, loginData.password).then(r=>{
-            if (r.status === 200){
-                localStorage.setItem("token",r.data)
+        login(loginData.userName, loginData.password).then(r => {
+            if (r.status === 200) {
+                localStorage.setItem("token", r.data)
                 profileMe(userStore)
             }
         })

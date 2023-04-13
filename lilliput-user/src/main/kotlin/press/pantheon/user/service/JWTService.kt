@@ -7,7 +7,6 @@ import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.stereotype.Service
 import java.nio.file.Files
 import java.nio.file.Paths
-import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -27,8 +26,8 @@ class JWTService {
 
     private var verifier = RSAVerifier.newVerifier(Paths.get("src/main/resources/jwt.pub"))
 
-    //token默认20分钟失效
-    private val tokenExpire: Long = 20
+    //token默认60分钟失效
+    private val tokenExpire: Long = 60
 
     //refresh token默认一周
     private val refreshTokenExpire: Long = 7 * 24 * 60
@@ -36,10 +35,10 @@ class JWTService {
     fun createToken(userId: Int?): String {
         var jti = UUID.randomUUID().toString()
         val jwt = JWT().setIssuer(issuer)
-            .setIssuedAt(ZonedDateTime.now(ZoneOffset.UTC))
+            .setIssuedAt(ZonedDateTime.now())
             .setAudience(if (userId == null) "system" else "user")
             .setUniqueId(jti)
-            .setExpiration(ZonedDateTime.now(ZoneOffset.UTC).plusMinutes(tokenExpire))
+            .setExpiration(ZonedDateTime.now().plusMinutes(tokenExpire))
             .addClaim("userId", userId)
         val encodedJWT = JWT.getEncoder().encode(jwt, signer)
         redisTemplate.opsForValue()
@@ -57,9 +56,13 @@ class JWTService {
     }
 
 
-    fun validate(token: String): Boolean {
+    fun verifyToken(token: String): Boolean {
         return try {
             val jwt = JWT.getDecoder().decode(token, verifier)
+            val expiration = jwt.expiration
+            if (ZonedDateTime.now() >= expiration){
+                false
+            }
             true
         } catch (ex: Exception) {
             false;

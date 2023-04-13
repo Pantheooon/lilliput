@@ -1,10 +1,10 @@
 import {Link} from "react-router-dom";
 import React, {useContext} from "react";
-import './product.css'
+import './goods.css'
 import {storeContext} from "../../stores/RootStore";
-import {Modal} from "antd";
+import {Image, Modal} from "antd";
 
-function ProductList(props) {
+function GoodsList(props) {
     let products = props.data
     const cartStore = useContext(storeContext).cartStore
     const addToCart = (data) => {
@@ -23,15 +23,16 @@ function ProductList(props) {
                 <div className="product-list" key={data.id}>
                     <Link to={`/product/${data.id}`}>
                         <img src={data.pic}
-                             className="product-list-img"/>
+                             className={'product-list-img'}/>
                     </Link>
                     <div className="product-list-detail">
-                        <span>{data.name}</span><i
+                        <span>产品：{data.name}</span><i
                         className="iconfont icon-gouwuchetianjia product-list-icon pointer"
                         onClick={() => {
                             addToCart(data)
                         }}/><br/>
-                        <span>Rs. {data.price}</span><br/>
+                        <span>售价： {data.price}</span><br/>
+                        <span>剩余库存： {data.inventory}</span><br/>
                     </div>
                 </div>
             )
@@ -40,4 +41,4 @@ function ProductList(props) {
 }
 
 
-export {ProductList}
+export {GoodsList}

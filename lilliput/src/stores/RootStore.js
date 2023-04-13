@@ -11,6 +11,7 @@ class RootStore{
     navStore;
 
     userStore;
+
     constructor() {
         this.cartStore = new CartStore()
         this.navStore = new NavStore()

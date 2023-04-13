@@ -7,6 +7,7 @@ const authClient = axios.create({
 
 authClient.interceptors.request.use(config => {
     config.headers['Content-Type'] = 'application/json'
+
     config.headers.setAuthorization('Bearer ' + localStorage.getItem("token"))
     return config;
 }, error => {

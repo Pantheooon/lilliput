@@ -15,22 +15,22 @@ class Goods {
     @Column(name = "name")
     var name: String? = null
 
+    @Column(name = "pic")
+    var pic: String? = null
 
     @Column(name = "price")
     var price: Int? = null
 
-    @Column(name = "quantity")
-    var quantity: Int? = null
 
-    @Column(name = "pic")
-    var pic: String? = null
+    @Column(name = "gift")
+    var gift: String? = null
 
-    @Column(name = "description")
-    var description: String? = null
+    @Column(name = "detail")
+    var detail: String? = null
 
-    @Column(name = "tag")
-    var tag: String? = null
+    @Column(name = "hot")
+    var hot: String? = null
 
-    @Column(name = "extends")
-    var extends: String? = null
+    @Column(name = "inventory")
+    var inventory: Int? = null
 }

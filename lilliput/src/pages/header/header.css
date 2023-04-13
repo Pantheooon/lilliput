@@ -65,7 +65,15 @@
 
 }
 
-.car_item-left{
+.order-item{
+    width: 450px;
+    height: 120px;
+    margin: 0px auto;
+    display: flex;
+    justify-content: center;
+}
+
+.car-item_left{
     width: 80px;
     height: 80px;
 

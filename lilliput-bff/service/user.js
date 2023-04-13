@@ -27,6 +27,7 @@ async function login(ctx) {
 }
 
 
+
 async function me(ctx) {
     let token = ctx.request.headers.authorization
     if (!token) {
@@ -61,6 +62,18 @@ async function refreshToken(ctx){
 }
 
 
+async function verifyToken(token){
+    let res = await user.get('/verify',{
+        headers:{
+            Authorization: token
+        }
+    })
+
+    return res
+
+}
+
+
 module.exports = {
-    singup, login, me,refreshToken
+    singup, login, me,refreshToken,verifyToken
 }
